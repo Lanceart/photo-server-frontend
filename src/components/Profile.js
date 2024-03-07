@@ -1,6 +1,6 @@
 import { Box, Image, Text, VStack } from '@chakra-ui/react';
 import Posts from './Posts';
-
+import icon from './IMG_2034.jpg'
 const Profile = () => {
   return (
     <Box>
@@ -8,10 +8,10 @@ const Profile = () => {
         <Image
           borderRadius="full"
           boxSize="80px"
-          src="https://bit.ly/kent-c-dodds"
+          src={icon}
           alt="Profile"
         />
-        <Text>Mark Markstrom</Text>
+        <Text>Linqing (Cyan) Li</Text>
         <Text fontSize="lg" color="gray.400">
           Software Engineer
         </Text>
