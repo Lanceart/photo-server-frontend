@@ -15,7 +15,7 @@ const Gallery = () => {
   };
   useEffect(() => {
     // Replace 'http://example.com/api/data' with the actual URL of the webpage/API
-    fetch('https://gallery-api-o5vw.onrender.com/list-db')
+    fetch('http://image-store-api.vercel.app/list-db')
       .then(response => response.json())
       .then(data => {
         const urls = data.Items.map(item => constructImageUrl(item.key));
@@ -65,7 +65,7 @@ const Gallery = () => {
 function constructImageUrl(key) {
   // For demonstration purposes, assuming the key is the URL
   // In a real scenario, you might need to prepend a base URL or add a file extension
-  return 'https://gallery-api-o5vw.onrender.com/image/' + `${key}`;
+  return 'http://image-store-api.vercel.app/image/' + `${key}`;
 }
 
 export default Gallery;
