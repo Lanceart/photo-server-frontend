@@ -11,7 +11,7 @@ const ImageCard = ({ url, onDelete, onCopyKey }) => {
   };
 
   const handleCopyKey = () => {
-    onCopyKey(url);
+    onCopyKey(url.slice(0, -8) + '.jpg');
     onClose(); // Ensure the menu closes after the action
   };
   return (
@@ -33,6 +33,7 @@ const ImageCard = ({ url, onDelete, onCopyKey }) => {
         <MenuList>
           <MenuItem onClick={handleDelete}>del</MenuItem>
           <MenuItem onClick={handleCopyKey}>copy</MenuItem>
+          
         </MenuList>
       </Menu>
     </Box>
