@@ -14,17 +14,17 @@ const Gallery = () => {
     500: 1, // 500px以下时一列
   };
   useEffect(() => {
-    // Replace 'http://example.com/api/data' with the actual URL of the webpage/API
-    fetch('https://gallery-api-o5vw.onrender.com/list-db')
+    fetch('https://7cepehhnii.execute-api.us-west-1.amazonaws.com/v1/images')
       .then(response => response.json())
       .then(data => {
-        const urls = data.Items.map(item => constructImageUrl(item.key));
+        const urls = data.map(item => constructImageUrl(item.id.S + '_low.jpg'));
         console.log(urls);
         setItems(urls);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
+
   }, []); // Empty dependency array means this effect runs once on mount
   const handleDelete = (url) => {
     console.log('Deleting', url);
@@ -65,7 +65,7 @@ const Gallery = () => {
 function constructImageUrl(key) {
   // For demonstration purposes, assuming the key is the URL
   // In a real scenario, you might need to prepend a base URL or add a file extension
-  return 'https://gallery-api-o5vw.onrender.com/image/' + `${key}`;
+  return 'https://7cepehhnii.execute-api.us-west-1.amazonaws.com/v1/image?imageid=' + `${key}`;
 }
 
 export default Gallery;
