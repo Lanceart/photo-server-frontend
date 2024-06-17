@@ -13,7 +13,7 @@ import useQuery from '../hooks/useQuery';
 import Gallery from './Gallery';
 
 const validFileTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-const URL = '/upload';
+const URL = '/image';
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -29,29 +29,69 @@ const Posts = () => {
     error: uploadError,
   } = useMutation({ url: URL });
 
-  // const {
-  //   data: imageUrls = [],
-  //   isLoading: imagesLoading,
-  //   error: fetchError,
-  // } = useQuery(URL, refetch);
-
   const [error, setError] = useState('');
 
   const handleUpload = async e => {
     const file = e.target.files[0];
 
-    if (!validFileTypes.find(type => type === file.type)) {
+    if (!validFileTypes.includes(file.type)) {
       setError('File must be in JPG/PNG format');
       return;
     }
 
-    const form = new FormData();
-    form.append('image', file);
+    const reader = new FileReader();
 
-    await uploadImage(form);
-    setTimeout(() => {
-      setRefetch(s => s + 1);
-    }, 1000);
+
+    try {
+      const response = await fetch(process.env.REACT_APP_API_URL + '/image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: file,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+      setRefetch((s) => s + 1);
+    } catch (err) {
+      console.error('Upload error:', err);
+      setError('Failed to upload image');
+    }
+
+
+    // reader.onloadend = async () => {
+    //   console.log('show me the fuck', reader.result)
+    //   const base64String = reader.result.split(',')[1];
+    //   console.log("Base64 String:", base64String);
+    //   try {
+    //     const response = await fetch(process.env.REACT_APP_API_URL + '/image', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'multipart/form-data',
+    //       },
+    //       body: atob(base64String),
+    //     });
+    //     if (!response.ok) {
+    //       throw new Error('Failed to upload image');
+    //     }
+    //     setRefetch((s) => s + 1);
+    //   } catch (err) {
+    //     console.error('Upload error:', err);
+    //     setError('Failed to upload image');
+    //   }
+
+    //   // try {
+    //   //   await uploadImage({ file: base64String });
+    //   //   setTimeout(() => {
+    //   //     setRefetch(s => s + 1);
+    //   //   }, 1000);
+    //   // } catch (err) {
+    //   //   console.error("Upload error:", err);
+    //   //   setError('Failed to upload image');
+    //   // }
+    // };
+    // reader.readAsDataURL(file);
   };
 
   return (
@@ -69,32 +109,15 @@ const Posts = () => {
         Upload
       </Button>
       {error && <ErrorText>{error}</ErrorText>}
-      {uploadError && <ErrorText>{uploadError}</ErrorText>}
+      {uploadError && <ErrorText>{uploadError.message}</ErrorText>}
 
       <Text textAlign="left" mb={4}>
         Posts
       </Text>
-      {/* {imagesLoading && (
-        <CircularProgress
-          color="gray.600"
-          trackColor="blue.300"
-          size={7}
-          thickness={10}
-          isIndeterminate
-        />
-      )} */}
-      {/* {fetchError && (
-        <ErrorText textAlign="left">Failed to load images</ErrorText>
-      )} */}
-      {/* {!fetchError && imageUrls?.length === 0 && (
-        <Text textAlign="left" fontSize="lg" color="gray.500">
-          No images found
-        </Text>
-      )} */}
 
-      <Gallery />
-      
+      <Gallery refetch={refetch} />
     </Box>
   );
 };
+
 export default Posts;
